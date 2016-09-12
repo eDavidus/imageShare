@@ -1,0 +1,110 @@
+<head>
+  <title>image_share</title>
+</head>
+
+<body>
+
+</body>
+
+<template name="ApplicationLayout">
+  {{> yield "image_form"}}
+  {{> yield "navbar"}}
+  {{> yield "main"}}
+</template>
+
+<template name="welcome">
+  <div class="container">
+    <div class="jumbotron">
+      <h1>Welcome to Image share {{username}}</h1>
+      <a href="/images" class="btn btn-info">ENTER</a>
+    </div>
+  </div>
+</template>
+
+<template name="image">
+    <div class="container">
+      <h2>{{img_alt}}</h2>
+      <h2>ID: {{_id}}</h2>
+      <a href="/images">
+        <img class="single-img" src="{{img_src}}"/>
+      </a>
+  </div>
+</template>
+
+<template name="navbar">
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <!--add login template-->
+      {{> loginButtons}}
+    </div>
+  </nav>
+</template>
+
+<!--define template for a modal to add one image-->
+<template name="image_add_form">
+  <div class="modal fade" id="image_add_form">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">
+            <h2>Add a new Image URL</h2>
+          </div>
+        </div>
+        <div class="modal-body">
+          <form class="js-add-image">
+            Image URL: <input type="text" name="img_src"/>
+            <br/>
+            Description: <input type="text" name="img_alt"/>
+            <button class="btn btn-success">Save</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <h3>Modal footer</h3>
+          <button class="btn btn-warning" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!--define template to display the images-->
+<template name="images">
+  <div class="container">
+    <!--display add button only if user login-->
+    {{#if currentUser}}
+      <button class="btn btn-success js-show-image-form">Add image</button>
+      <br/><br/>
+    {{/if}}
+    <!--say if filter apllied-->
+    <h2>
+      {{#if filtering_images}}
+        Showing images by {{getFilterUser}}. <a href="#" class="js-unset-user-filter">Show all images</a>
+      {{/if}}
+    </h2>
+    <div class="row">
+    {{#each images}}
+      <div class="col-xs-12 col-sm-6 col-md-3" id="{{_id}}">
+        <div class="thumbnail">
+            <a href="/image/{{_id}}">
+              <img class="js-images thumbnail-img" src="{{img_src}}" alt="{{img_alt}}"/>
+            </a>
+          <div class="caption">
+            <h4>Rating: {{rating}}</h4>
+            <p>{{img_alt}}</p>
+            <p>User: <a href="#" class="js-set-user-filter">{{getUser createdBy}}</a></p>
+            <!--only if the image belongs to current user-->
+            {{#if image_owner}}
+            <!--display rating form-->
+              <p>{{>starsRating mutable=true class="js-rate-image" id=_id}}</p>
+              <button class="js-del-image btn btn-warning">delete</button>
+            {{/if}}
+          </div>   
+        </div>
+      </div>
+    {{/each}}
+    </div>
+  <!--end of container-->
+  </div> 
+</template>
+
+
